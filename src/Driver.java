@@ -15,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-
 //Referenced Library
 import com.coremedia.iso.IsoFile;
 
@@ -27,7 +27,7 @@ public class Driver extends JFrame {
 	/**
 	 * Number of Series Active on Nick Heaven
 	 */
-	final int SIZE = 16;
+	final int SIZE = 17;
 	/**
 	 * Width of the Launcher
 	 */
@@ -35,7 +35,7 @@ public class Driver extends JFrame {
 	/**
 	 * Height of the Launcher
 	 */
-	final int Y = 350;
+	final int Y = 375;
 	
 	/**
 	 * Directory which the Network drive is mapped to
@@ -43,26 +43,27 @@ public class Driver extends JFrame {
 	static String root;
 	
 	/* Files which point to the folder of a particular series */
-	File AreYouAfraidoftheDarkDir = new File(root +"\\Public\\Nick Heaven\\Are You Afraid of the Dark");
-	File LastAirbenderDir = new File(root +"\\Public\\Nick Heaven\\Avatar The Last Airbender");
-	File DannyPhantomDir = new File(root +"\\Public\\Nick Heaven\\Danny Phantom");
-	File DrakeandJoshDir = new File(root +"\\Public\\Nick Heaven\\Drake and Josh");
-	File HeyArnoldDir = new File(root +"\\Public\\Nick Heaven\\Hey Arnold");
-	File InvaderZimDir = new File(root +"\\Public\\Nick Heaven\\Invader Zim");
-	File JimmyNeutronDir = new File(root +"\\Public\\Nick Heaven\\Jimmy Neutron");
-	File LegendofKorraDir = new File(root +"\\Public\\Nick Heaven\\Legend of Korra");
-	File LegendsofTheHiddenTempleDir = new File(root +"\\Public\\Nick Heaven\\Legends of the Hidden Temple");
-	File NedDir = new File(root +"\\Public\\Nick Heaven\\Ned's Declassified School Survival Guide");
-	File RenandStimpyDir = new File(root +"\\Public\\Nick Heaven\\Ren & Stimpy");
-	File RockoDir = new File(root +"\\Public\\Nick Heaven\\Rocko's Modern Life");
-	File RugratsDir = new File(root +"\\Public\\Nick Heaven\\Rugrats");
-	File SpongebobDir = new File(root +"\\Public\\Nick Heaven\\Spongebob");
-	File FairlyOddParentsDir = new File(root +"\\Public\\Nick Heaven\\The Fairly OddParents");
-	File HalloweenDir = new File(root +"\\Public\\Nick Heaven\\Holiday Episodes\\Halloween");
-	File RobotDir = new File(root +"\\Public\\Nick Heaven\\My Life as a Teenage Robot");
+	File AreYouAfraidoftheDarkDir = new File(root +"\\Nick Heaven\\Are You Afraid of the Dark");
+	File LastAirbenderDir = new File(root +"\\Nick Heaven\\Avatar The Last Airbender");
+	File DannyPhantomDir = new File(root +"\\Nick Heaven\\Danny Phantom");
+	File DrakeandJoshDir = new File(root +"\\Nick Heaven\\Drake and Josh");
+	File HeyArnoldDir = new File(root +"\\Nick Heaven\\Hey Arnold");
+	File InvaderZimDir = new File(root +"\\Nick Heaven\\Invader Zim");
+	File JimmyNeutronDir = new File(root +"\\Nick Heaven\\Jimmy Neutron");
+	File LegendofKorraDir = new File(root +"\\Nick Heaven\\Legend of Korra");
+	File LegendsofTheHiddenTempleDir = new File(root +"\\Nick Heaven\\Legends of the Hidden Temple");
+	File NedDir = new File(root +"\\Nick Heaven\\Ned's Declassified School Survival Guide");
+	File RenandStimpyDir = new File(root +"\\Nick Heaven\\Ren & Stimpy");
+	File RockoDir = new File(root +"\\Nick Heaven\\Rocko's Modern Life");
+	File RugratsDir = new File(root +"\\Nick Heaven\\Rugrats");
+	File SpongebobDir = new File(root +"\\Nick Heaven\\Spongebob");
+	File FairlyOddParentsDir = new File(root +"\\Nick Heaven\\The Fairly OddParents");
+	File HalloweenDir = new File(root +"\\Nick Heaven\\Holiday Episodes\\Halloween");
+	File RobotDir = new File(root +"\\Nick Heaven\\My Life as a Teenage Robot");
 	File DougDir = new File("");
-	File CatDogDir = new File(root +"\\Public\\Nick Heaven\\CatDog");
+	File CatDogDir = new File(root +"\\Nick Heaven\\CatDog");
 	File PeteandPeteDir = new File("");
+	File TMNTDir = new File(root +"\\Nick Heaven\\TMNT");
 	
 	/*
 	 * Arrays of Files which load all of the files within a shows directory into
@@ -87,17 +88,18 @@ public class Driver extends JFrame {
 	File[] FairlyOddParents = FairlyOddParentsDir.listFiles();
 	File[] HalloweenSpecials = HalloweenDir.listFiles();
 	File[] CatDog = CatDogDir.listFiles();
+	File[] TMNT = TMNTDir.listFiles();
 
-	ImageIcon DannyPhantomIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\DannyPhantom.png");
-	ImageIcon NickHeavenIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\NickHeaven.png");
-	ImageIcon KorraIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\Korra.png");
-	ImageIcon HalloweenIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\halloween.png");
-	ImageIcon AprilIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\April.png");
-	ImageIcon SpongebobIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\spingebill.png");
-	ImageIcon RobotIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\robot.png");
-	ImageIcon BlackSunIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\BlackSun.png");
-	ImageIcon ChristmasIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\Nickmas.png");
-	ImageIcon DrakeandJoshIcon = new ImageIcon(root +"\\Public\\Nick Heaven\\Logos\\DrakeandJosh.png");
+	ImageIcon DannyPhantomIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\DannyPhantom.png");
+	ImageIcon NickHeavenIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\NickHeaven.png");
+	ImageIcon KorraIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\Korra.png");
+	ImageIcon HalloweenIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\halloween.png");
+	ImageIcon AprilIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\April.png");
+	ImageIcon SpongebobIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\spingebill.png");
+	ImageIcon RobotIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\robot.png");
+	ImageIcon BlackSunIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\BlackSun.png");
+	ImageIcon ChristmasIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\Nickmas.png");
+	ImageIcon DrakeandJoshIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\DrakeandJosh.png");
 
 	static Random r = new Random(); // Random Object
 	JPanel panel = new JPanel(); // Panel for the GUI
@@ -113,6 +115,8 @@ public class Driver extends JFrame {
 	JButton ChristmasBUT = new JButton();
 	JButton DrakeandJoshBUT = new JButton();
 	static JProgressBar bar = new JProgressBar();
+	static JLabel FileDisplay = new JLabel();
+	Font displayFont = new Font("Calibri", Font.PLAIN, 12);
 	Font stopFont = new Font("Calibri", Font.BOLD, 14);
 
 	public Driver() {
@@ -178,6 +182,10 @@ public class Driver extends JFrame {
 		//ProgressBar
 		bar.setBounds(15, 275, X-40, 25);
 		
+		//Episode Information
+		FileDisplay.setBounds(15, 300, X-40, 25);
+		FileDisplay.setFont(displayFont);
+		
 		//Panel Setup
 		panel.add(launchBUT);
 		panel.add(DannyPhantomBUT);
@@ -191,6 +199,7 @@ public class Driver extends JFrame {
 		panel.add(ChristmasBUT);
 		panel.add(DrakeandJoshBUT);
 		panel.add(bar);
+		panel.add(FileDisplay);
 		panel.setBackground(Color.white);
 		add(panel);
 		setVisible(true);
@@ -230,16 +239,15 @@ public class Driver extends JFrame {
 			episode = r.nextInt(series.length) - 1; // Picks and episode
 			IsoFile isoFile = new IsoFile(series[episode].getPath());
 			duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-			System.out.println(duration);
 			Desktop.getDesktop().open(series[episode]); // Opens the episode
 			long elapsed = 0;
 			bar.setMaximum((int) duration);
+			FileDisplay.setText("Now Playing: "+ series[episode].toString());
 			while(elapsed < duration){
 					Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 					bar.setValue((int) elapsed);
 					bar.setToolTipText(TimeUnit.SECONDS.toMinutes(elapsed) +" Minutes Elasped out of "+ TimeUnit.SECONDS.toMinutes(duration));
 					elapsed++;
-					System.out.println("Looped"+ elapsed);
 			}
 			bar.setValue(0);
 
@@ -310,6 +318,7 @@ public class Driver extends JFrame {
 						// iterates and a new episode is picked
 						long elapsed = 0;
 						bar.setMaximum((int) duration);
+						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
 						while(elapsed < duration){
 								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 								bar.setValue((int) elapsed);
@@ -359,6 +368,7 @@ public class Driver extends JFrame {
 						// iterates and a new episode is picked
 						long elapsed = 0;
 						bar.setMaximum((int) duration);
+						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
 						while(elapsed < duration){
 								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 								bar.setValue((int) elapsed);
@@ -408,6 +418,7 @@ public class Driver extends JFrame {
 						// iterates and a new episode is picked
 						long elapsed = 0;
 						bar.setMaximum((int) duration);
+						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
 						while(elapsed < duration){
 								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 								bar.setValue((int) elapsed);
@@ -518,12 +529,13 @@ public class Driver extends JFrame {
 	public static long playAprilFoolsEpisode(){
 		long duration = 1000;
 		try{
-		File AprilFoolsSpecial = new File("\\\\PERSONALCLOUD\\Public\\Nick Heaven\\Holiday Episodes\\April Fool's\\Spongebob S1E38 (April Fool's Special).mp4");
+		File AprilFoolsSpecial = new File(root +"\\Nick Heaven\\Holiday Episodes\\April Fool's\\Spongebob S1E38 (April Fool's Special).mp4");
 		IsoFile isoFile = isoFile = new IsoFile(AprilFoolsSpecial.getPath());
 		duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
 		Desktop.getDesktop().open(AprilFoolsSpecial);
 		long elapsed = 0;
 		bar.setMaximum((int) duration);
+		FileDisplay.setText("Now Playing: "+ AprilFoolsSpecial.toString());
 		while(elapsed < duration){
 				Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 				bar.setValue((int) elapsed);
@@ -544,7 +556,7 @@ public class Driver extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			Runtime rt = Runtime.getRuntime();
 			try {
-				Process pr = rt.exec("java -jar \"\\\\PERSONALCLOUD\\Public\\Nick Heaven\\Launcher\\Nick Heaven.jar\"");
+				Process pr = rt.exec("java -jar \""+ root +"\\Nick Heaven\\Launcher\\Nick Heaven.jar\"");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -572,7 +584,6 @@ public class Driver extends JFrame {
 			series = r.nextInt(SIZE-2)+1;	
 			}
 			try {
-				series = 12;
 				if (series == 0) {
 					duration = playEpisode(AreYouAfraidoftheDark);
 
@@ -625,6 +636,9 @@ public class Driver extends JFrame {
 					duration = playEpisode(CatDog);
 			
 				} else if(series == 15) {
+					duration = playEpisode(TMNT);
+				
+				} else if(series == 16) {
 					duration = playEpisode(LegendsofTheHiddenTemple);
 					
 				} else {
@@ -659,6 +673,7 @@ public class Driver extends JFrame {
 						// iterates and a new episode is picked
 						long elapsed = 0;
 						bar.setMaximum((int) duration);
+						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
 						while(elapsed < duration){
 								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 								bar.setValue((int) elapsed);
@@ -699,13 +714,14 @@ public class Driver extends JFrame {
 			long duration;
 			ArrayList<Episode> episodes = sortEpisodes(LastAirbender);
 			try{
-				File firstTrailer = new File("\\\\PERSONALCLOUD\\Public\\Nick Heaven\\Airbender Trailers\\Day of Black Sun.mp4");
-				File secondTrailer = new File("\\\\PERSONALCLOUD\\Public\\Nick Heaven\\Airbender Trailers\\Trailer.mp4");
-				IsoFile isoFileT = new IsoFile("\\\\PERSONALCLOUD\\Public\\Nick Heaven\\Airbender Trailers\\Day of Black Sun.mp4");
+				File firstTrailer = new File(root +"\\Nick Heaven\\Airbender Trailers\\Day of Black Sun.mp4");
+				File secondTrailer = new File(root +"\\Nick Heaven\\Airbender Trailers\\Trailer.mp4");
+				IsoFile isoFileT = new IsoFile(root +"\\Nick Heaven\\Airbender Trailers\\Day of Black Sun.mp4");
 				duration = (long) isoFileT.getMovieBox().getMovieHeaderBox().getDuration() / isoFileT.getMovieBox().getMovieHeaderBox().getTimescale();
 				Desktop.getDesktop().open(firstTrailer);
 				long elapsed = 0;
 				bar.setMaximum((int) duration);
+				FileDisplay.setText("Now Playing: "+ firstTrailer.toString());
 				while(elapsed < duration){
 						Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 						bar.setValue((int) elapsed);
@@ -723,6 +739,7 @@ public class Driver extends JFrame {
 					// iterates and a new episode is picked
 					elapsed = 0;
 					bar.setMaximum((int) duration);
+					FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
 					while(elapsed < duration){
 							Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 							bar.setValue((int) elapsed);
@@ -733,11 +750,12 @@ public class Driver extends JFrame {
 					bar.setValue(0);
 					
 					if(i == 21){
-						isoFileT = new IsoFile("\\\\PERSONALCLOUD\\Public\\Nick Heaven\\Airbender Trailers\\Trailer.mp4");
+						isoFileT = new IsoFile(root +"\\Nick Heaven\\Airbender Trailers\\Trailer.mp4");
 						duration = (long) isoFileT.getMovieBox().getMovieHeaderBox().getDuration() / isoFileT.getMovieBox().getMovieHeaderBox().getTimescale();
 						Desktop.getDesktop().open(secondTrailer);
 						elapsed = 0;
 						bar.setMaximum((int) duration);
+						FileDisplay.setText("Now Playing: "+ secondTrailer.toString());
 						while(elapsed < duration){
 								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 								bar.setValue((int) elapsed);
@@ -774,6 +792,7 @@ public class Driver extends JFrame {
 						// iterates and a new episode is picked
 						long elapsed = 0;
 						bar.setMaximum((int) duration);
+						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
 						while(elapsed < duration){
 								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 								bar.setValue((int) elapsed);
@@ -807,7 +826,7 @@ public class Driver extends JFrame {
 		
 	
 	public static void main(String[] args) {
-		root = JOptionPane.showInputDialog("What drive is the Network Drive mapped to? (I.E. A:\\)");
+		root = JOptionPane.showInputDialog("What drive is the Network Drive mapped to? (I.E. A:)");
 		new Driver();
 	}
 
