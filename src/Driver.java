@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,20 +29,25 @@ public class Driver extends JFrame {
 	/**
 	 * Number of Series Active on Nick Heaven
 	 */
-	final int SIZE = 17;
+	final int SIZE = 18;
 	/**
 	 * Width of the Launcher
 	 */
-	final int X = 500;
+	final int X = 400;
 	/**
 	 * Height of the Launcher
 	 */
-	final int Y = 375;
+	final int Y = 575;
 	
 	/**
 	 * Directory which the Network drive is mapped to
 	 */
 	static String root;
+	static String error;
+	static File Error = new File("Error.txt");
+	
+
+	Color NickOrange = new Color(244, 109, 37);
 	
 	/* Files which point to the folder of a particular series */
 	File AreYouAfraidoftheDarkDir = new File(root +"\\Nick Heaven\\Are You Afraid of the Dark");
@@ -60,10 +67,11 @@ public class Driver extends JFrame {
 	File FairlyOddParentsDir = new File(root +"\\Nick Heaven\\The Fairly OddParents");
 	File HalloweenDir = new File(root +"\\Nick Heaven\\Holiday Episodes\\Halloween");
 	File RobotDir = new File(root +"\\Nick Heaven\\My Life as a Teenage Robot");
-	File DougDir = new File("");
+	File DougDir = new File(root +"\\Nick Heaven\\Doug");
 	File CatDogDir = new File(root +"\\Nick Heaven\\CatDog");
 	File PeteandPeteDir = new File("");
 	File TMNTDir = new File(root +"\\Nick Heaven\\TMNT");
+	File SecretDir = new File(root +"\\Nick Heaven\\Secret");
 	
 	/*
 	 * Arrays of Files which load all of the files within a shows directory into
@@ -89,6 +97,34 @@ public class Driver extends JFrame {
 	File[] HalloweenSpecials = HalloweenDir.listFiles();
 	File[] CatDog = CatDogDir.listFiles();
 	File[] TMNT = TMNTDir.listFiles();
+	File[] Doug = DougDir.listFiles();
+	File[] Secret = SecretDir.listFiles();
+	File[] Avatar = new File[LegendofKorra.length + LastAirbender.length];
+	
+	//Booleans for if a show is selected to run, note that these variables are always lower case, unlike their respecitve File Arrays
+	Series dannyphantom = new Series(DannyPhantom, "Danny Phantom");
+	Series areyouafraidofthedark = new Series(AreYouAfraidoftheDark, "Are You Afraid of the Dark");
+	Series lastairbender = new Series(LastAirbender, "Last Airbender");
+	Series drakeandjosh = new Series(DrakeandJosh, "Drake and Josh");
+	Series heyarnold = new Series(HeyArnold, "Hey Arnold");
+	Series invaderzim = new Series(InvaderZim, "Invader Zim");
+	Series jimmyneutron = new Series(JimmyNeutron, "Jimmy Neutron");
+	Series legendofkorra = new Series(LegendofKorra, "Legend of Korra");
+	Series legendsofthehiddentemple = new Series(LegendsofTheHiddenTemple, "Legends of the Hidden Temple");
+	Series ned = new Series(Ned, "Ned");
+	Series renandstimpy = new Series(RenandStimpy, "Ren and Stimpy");
+	Series rocko = new Series(Rocko, "Rocko");
+	Series rugrats = new Series(Rugrats, "Rugrats");
+	Series spongebob = new Series(Spongebob, "Spongebob");
+	Series robot = new Series(Robot, "Robot");
+	Series fairlyoddparent = new Series(FairlyOddParents, "The Fairly Oddparents");
+	Series catdog = new Series(CatDog, "Catdog");
+	Series tmnt = new Series(TMNT, "TMNT");
+	Series doug = new Series(Doug, "Doug");
+	Series secret = new Series(Secret, "YTP");
+	Series avatar;
+	//Series nineties = new Series(Nineties, "Nineties");
+	//Series twok = new Series(Twok, "Twok");
 
 	ImageIcon DannyPhantomIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\DannyPhantom.png");
 	ImageIcon NickHeavenIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\NickHeaven.png");
@@ -100,10 +136,28 @@ public class Driver extends JFrame {
 	ImageIcon BlackSunIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\BlackSun.png");
 	ImageIcon ChristmasIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\Nickmas.png");
 	ImageIcon DrakeandJoshIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\DrakeandJosh.png");
+	ImageIcon AirbenderIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\airbender.png");
+	ImageIcon DarkIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\dark.png");
+	ImageIcon ArnoldIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\heyarnold.png");
+	ImageIcon ZimIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\zim.png");
+	ImageIcon NedIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\ned.png");
+	ImageIcon RSIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\renandstimpy.png");
+	ImageIcon RockoIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\rocko.png");
+	ImageIcon RugratsIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\rugrats.png");
+	ImageIcon OddParentsIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\oddparents.png");
+	ImageIcon DougIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\doug.png");
+	ImageIcon CatDogIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\catdog.png");
+	ImageIcon TMNTIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\tmnt.png");
+	ImageIcon TempleIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\temple.png");
+	ImageIcon NeutronIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\jimmyneutron.png");
+	ImageIcon NinetiesIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\nineties.png");
+	ImageIcon TwoKIcon = new ImageIcon(root +"\\Nick Heaven\\Logos\\2k.png");
 
 	static Random r = new Random(); // Random Object
 	JPanel panel = new JPanel(); // Panel for the GUI
 	JButton launchBUT = new JButton("Launch Nick Heaven!"); // Button that Launches Nick Heaven
+	JButton OnBUT = new JButton("ON");
+	JButton OffBUT = new JButton("OFF");
 	JButton DannyPhantomBUT = new JButton();
 	JButton KorraBUT = new JButton();
 	JButton HalloweenBUT = new JButton();
@@ -114,12 +168,32 @@ public class Driver extends JFrame {
 	JButton BlackSunBUT = new JButton();
 	JButton ChristmasBUT = new JButton();
 	JButton DrakeandJoshBUT = new JButton();
+	JButton AirbenderBUT = new JButton();
+	JButton DarkBUT = new JButton();
+	JButton ArnoldBUT = new JButton();
+	JButton ZimBUT = new JButton();
+	JButton NedBUT = new JButton();
+	JButton RSBUT = new JButton();
+	JButton RockoBUT = new JButton();
+	JButton RugratBUT = new JButton();
+	JButton OddParentsBUT = new JButton();
+	JButton DougBUT = new JButton();
+	JButton CatDogBUT = new JButton();
+	JButton TMNTBUT = new JButton();
+	JButton TempleBUT = new JButton();
+	JButton NeutronBUT = new JButton();
+	JButton NinetiesBUT = new JButton();
+	JButton TwoKBUT = new JButton();
 	static JProgressBar bar = new JProgressBar();
 	static JLabel FileDisplay = new JLabel();
-	Font displayFont = new Font("Calibri", Font.PLAIN, 12);
+	static JLabel UpNextDisplay = new JLabel();
+	Font displayFont = new Font("Calibri", Font.BOLD, 12);
 	Font stopFont = new Font("Calibri", Font.BOLD, 14);
+	Font statusFont = new Font("Calibri", Font.BOLD, 9);
 
 	public Driver() {
+		combineArrays();
+		avatar = new Series(Avatar, "Avatar");
 		setTitle("Nick Heaven Control Panel");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -127,67 +201,174 @@ public class Driver extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE); // Closes the Program on X button press
 		panel.setLayout(null);
 		launchBUT.setToolTipText("Launch Nick Heaven");
-		launchBUT.setBounds((int) (X*.35), 10, 143, 75);
+		launchBUT.setBounds((int) (X*.3), 10, 143, 75);
 		launchBUT.setIcon(NickHeavenIcon);
 		launchBUT.addActionListener(new launchBUTListener()); // Adds the Action Listener to the button
 		
-		//Marathon Buttons
-		DannyPhantomBUT.setToolTipText("Starts a Danny Phantom Marathon");
+		//Episode Flagger Buttons
+		//Row 0
+		OnBUT.setToolTipText("Enable All Shows");
+		OnBUT.setBounds(15, 35, 50, 50);
+		OnBUT.addActionListener(new OnButton());
+		OnBUT.setBackground(Color.GREEN);
+		OnBUT.setFont(statusFont);
+		OffBUT.setToolTipText("Disable All Shows");
+		OffBUT.setBounds(315, 35, 50, 50);
+		OffBUT.addActionListener(new OffButton());
+		OffBUT.setBackground(Color.RED);
+		OffBUT.setFont(statusFont);
+		//Row 1
+		DannyPhantomBUT.setToolTipText("Enable Danny Phantom");
 		DannyPhantomBUT.setBounds(15, 95, 50, 50);
-		DannyPhantomBUT.addActionListener(new DannyPhantomMarathon());
+		DannyPhantomBUT.addActionListener(new DannyPhantom());
 		DannyPhantomBUT.setIcon(DannyPhantomIcon);
-		KorraBUT.setToolTipText("Starts a Legend of Korra Marathon");
+		DannyPhantomBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		KorraBUT.setToolTipText("Enable Legend of Korra");
 		KorraBUT.setBounds(75, 95, 50, 50);
-		KorraBUT.addActionListener(new LegendofKorraMarathon());
+		KorraBUT.addActionListener(new LegendofKorra());
 		KorraBUT.setIcon(KorraIcon);
-		RobotBUT.setToolTipText("Starts a My Life as a Teenage Robot Marathon");
+		KorraBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		RobotBUT.setToolTipText("Enable My Life as a Teenage Robot");
 		RobotBUT.setBounds(135, 95, 50, 50);
-		RobotBUT.addActionListener(new RobotMarathon());
+		RobotBUT.addActionListener(new Robot());
 		RobotBUT.setIcon(RobotIcon);
-		SpongeBUT.setToolTipText("Starts a Spongebob Marathon");
+		RobotBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		SpongeBUT.setToolTipText("Enable Spongebob");
 		SpongeBUT.setBounds(195, 95, 50, 50);
-		SpongeBUT.addActionListener(new SpongebobMarathon());
+		SpongeBUT.addActionListener(new Spongebob());
 		SpongeBUT.setIcon(SpongebobIcon);
-		DrakeandJoshBUT.setToolTipText("Starts a Drake and Josh Marathon");
+		SpongeBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		DrakeandJoshBUT.setToolTipText("Enable Drake and Josh");
 		DrakeandJoshBUT.setBounds(255, 95, 50, 50);
-		DrakeandJoshBUT.addActionListener(new DrakeandJoshMarathon());
+		DrakeandJoshBUT.addActionListener(new DrakeandJosh());
 		DrakeandJoshBUT.setIcon(DrakeandJoshIcon);
+		DrakeandJoshBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		AirbenderBUT.setToolTipText("Enable Avatar: The Last");
+		AirbenderBUT.setBounds(315, 95, 50, 50);
+		AirbenderBUT.addActionListener(new Airbender());
+		AirbenderBUT.setIcon(AirbenderIcon);
+		AirbenderBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		//ROW 2
+		DarkBUT.setToolTipText("Enable Are You Afraid of the Dark");
+		DarkBUT.setBounds(15, 155, 50, 50);
+		DarkBUT.addActionListener(new Dark());
+		DarkBUT.setIcon(DarkIcon);
+		DarkBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		ArnoldBUT.setToolTipText("Enable Hey Arnold");
+		ArnoldBUT.setBounds(75, 155, 50, 50);
+		ArnoldBUT.addActionListener(new Arnold());
+		ArnoldBUT.setIcon(ArnoldIcon);
+		ArnoldBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		ZimBUT.setToolTipText("Enable Invader Zim");
+		ZimBUT.setBounds(135, 155, 50, 50);
+		ZimBUT.addActionListener(new Zim());
+		ZimBUT.setIcon(ZimIcon);
+		ZimBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		NedBUT.setToolTipText("Enable Ned's Declassified School Survival Guide");
+		NedBUT.setBounds(195, 155, 50, 50);
+		NedBUT.addActionListener(new Ned());
+		NedBUT.setIcon(NedIcon);
+		NedBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		RSBUT.setToolTipText("Enable Ren and Stimpy");
+		RSBUT.setBounds(255, 155, 50, 50);
+		RSBUT.addActionListener(new RenandStimpy());
+		RSBUT.setIcon(RSIcon);
+		RSBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		RockoBUT.setToolTipText("Enable Rocko's Modern Life");
+		RockoBUT.setBounds(315, 155, 50, 50);
+		RockoBUT.addActionListener(new Rocko());
+		RockoBUT.setIcon(RockoIcon);
+		RockoBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		
+		//Row 3
+		RugratBUT.setToolTipText("Enable Rugrats");
+		RugratBUT.setBounds(15, 215, 50, 50);
+		RugratBUT.addActionListener(new Rugrat());
+		RugratBUT.setIcon(RugratsIcon);
+		RugratBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		OddParentsBUT.setToolTipText("Enable Fairly OddParents");
+		OddParentsBUT.setBounds(75, 215, 50, 50);
+		OddParentsBUT.addActionListener(new OddParents());
+		OddParentsBUT.setIcon(OddParentsIcon);
+		OddParentsBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		DougBUT.setToolTipText("Enable Doug");
+		DougBUT.setBounds(135, 215, 50, 50);
+		DougBUT.addActionListener(new Doug());
+		DougBUT.setIcon(DougIcon);
+		DougBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		CatDogBUT.setToolTipText("Enable CatDog");
+		CatDogBUT.setBounds(195, 215, 50, 50);
+		CatDogBUT.addActionListener(new CatDog());
+		CatDogBUT.setIcon(CatDogIcon);
+		CatDogBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		TMNTBUT.setToolTipText("Enable Teenage Mutant Ninja Turtles");
+		TMNTBUT.setBounds(255, 215, 50, 50);
+		TMNTBUT.addActionListener(new TMNT());
+		TMNTBUT.setIcon(TMNTIcon);
+		TMNTBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		TempleBUT.setToolTipText("Enable Legends of the Hidden Temple");
+		TempleBUT.setBounds(315, 215, 50, 50);
+		TempleBUT.addActionListener(new Temple());
+		TempleBUT.setIcon(TempleIcon);
+		TempleBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		
+		//Row 4
+		NeutronBUT.setToolTipText("Enable Jimmy Neutron");
+		NeutronBUT.setBounds(15, 275, 50, 50);
+		NeutronBUT.addActionListener(new JimmyNeutron());
+		NeutronBUT.setIcon(NeutronIcon);
+		NeutronBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		NinetiesBUT.setToolTipText("Enable 90's Commercials");
+		NinetiesBUT.setBounds(75, 275, 50, 50);
+		NinetiesBUT.setIcon(NinetiesIcon);
+		NinetiesBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+		NinetiesBUT.setEnabled(false);
+		TwoKBUT.setToolTipText("Enable 00's Commercials");
+		TwoKBUT.setBounds(135, 275, 50, 50);
+		TwoKBUT.setIcon(TwoKIcon);
+		TwoKBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+		TwoKBUT.setEnabled(false);
 		
 		//Holiday Buttons
 		HalloweenBUT.setToolTipText("Starts a Halloween Marathon");
-		HalloweenBUT.setBounds(15, 155, 50, 50);
+		HalloweenBUT.setBounds(15, 335, 50, 50);
 		HalloweenBUT.addActionListener(new Halloween());
 		HalloweenBUT.setIcon(HalloweenIcon);
 		AprilBUT.setToolTipText("Starts the April Fools Day Event");
-		AprilBUT.setBounds(75, 155, 50, 50);
+		AprilBUT.setBounds(75, 335, 50, 50);
 		AprilBUT.addActionListener(new AprilFools());
 		AprilBUT.setIcon(AprilIcon);
 		BlackSunBUT.setToolTipText("Starts an Avatar Marathon");
 		BlackSunBUT.setIcon(BlackSunIcon);
-		BlackSunBUT.setBounds(135, 155, 50, 50);
+		BlackSunBUT.setBounds(135, 335, 50, 50);
 		BlackSunBUT.addActionListener(new BlackSun());
 		ChristmasBUT.setToolTipText("NYI - Starts a Christmas Special Marathon - NYI");
-		ChristmasBUT.setBounds(195, 155, 50, 50);
+		ChristmasBUT.setBounds(195, 335, 50, 50);
 		ChristmasBUT.addActionListener(new Christmas());
 		ChristmasBUT.setIcon(ChristmasIcon);
 		ChristmasBUT.setEnabled(false);
 		
 		//Special Button
 		stopBUT.setToolTipText("Reset the Control Panel");
-		stopBUT.setBounds((int) (X*.4), 215, 100, 50);
+		stopBUT.setBounds((int) (X*.35), 450, 100, 50);
 		stopBUT.addActionListener(new restartListener());
 		stopBUT.setFont(stopFont);
-		stopBUT.setBackground(Color.RED);
+		stopBUT.setForeground(NickOrange);
+		stopBUT.setBackground(Color.WHITE);
 		
 		//ProgressBar
-		bar.setBounds(15, 275, X-40, 25);
+		bar.setBounds(15, 510, X-40, 25);
 		
 		//Episode Information
-		FileDisplay.setBounds(15, 300, X-40, 25);
+		FileDisplay.setBounds(15, 400, X-40, 25);
 		FileDisplay.setFont(displayFont);
+		UpNextDisplay.setBounds(15, 425, X-40, 25);
+		UpNextDisplay.setFont(displayFont);
 		
 		//Panel Setup
 		panel.add(launchBUT);
+		panel.add(OnBUT);
+		panel.add(OffBUT);
 		panel.add(DannyPhantomBUT);
 		panel.add(KorraBUT);
 		panel.add(HalloweenBUT);
@@ -198,12 +379,40 @@ public class Driver extends JFrame {
 		panel.add(BlackSunBUT);
 		panel.add(ChristmasBUT);
 		panel.add(DrakeandJoshBUT);
+		panel.add(AirbenderBUT);
+		panel.add(ArnoldBUT);
+		panel.add(CatDogBUT);
+		panel.add(DarkBUT);
+		panel.add(DougBUT);
+		panel.add(NedBUT);
+		panel.add(OddParentsBUT);
+		panel.add(RSBUT);
+		panel.add(RockoBUT);
+		panel.add(RugratBUT);
+		panel.add(TMNTBUT);
+		panel.add(ZimBUT);
+		panel.add(TempleBUT);
+		panel.add(NeutronBUT);
+		panel.add(NinetiesBUT);
+		panel.add(TwoKBUT);
 		panel.add(bar);
 		panel.add(FileDisplay);
-		panel.setBackground(Color.white);
+		panel.add(UpNextDisplay);
+		panel.setBackground(NickOrange);
 		add(panel);
 		setVisible(true);
 		/* Adds the panel and makes the GUI visible */
+	}
+	
+	public void combineArrays() {
+		for(int i = 0; i < LastAirbender.length; i++) {
+			Avatar[i] = LastAirbender[i];
+		}
+		int j = LastAirbender.length;
+		for(int i = 0; i < LegendofKorra.length; i++) {
+			Avatar[j] = LegendofKorra[i];
+			j++;
+		}
 	}
 
 	/*
@@ -234,15 +443,17 @@ public class Driver extends JFrame {
 		long duration = 0;
 
 		try {
-
 			int episode;
 			episode = r.nextInt(series.length) - 1; // Picks and episode
+			System.out.println(series[episode].toString());
 			IsoFile isoFile = new IsoFile(series[episode].getPath());
-			duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
+			duration = isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
+			System.out.println(duration);
 			Desktop.getDesktop().open(series[episode]); // Opens the episode
 			long elapsed = 0;
 			bar.setMaximum((int) duration);
-			FileDisplay.setText("Now Playing: "+ series[episode].toString());
+			FileDisplay.setText(series[episode].toString());
+			FileDisplay.setToolTipText("Now Playing: "+ series[episode].toString());
 			while(elapsed < duration){
 					Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 					bar.setValue((int) elapsed);
@@ -252,9 +463,25 @@ public class Driver extends JFrame {
 			bar.setValue(0);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			error = e.getMessage();
+			FileWriter fw;
+			try {
+				fw = new FileWriter(Error);
+				fw.write(error);
+				fw.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			error = e.getMessage();
+			FileWriter fw;
+			try {
+				fw = new FileWriter(Error);
+				fw.write(error);
+				fw.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 
 		return duration;
@@ -299,151 +526,40 @@ public class Driver extends JFrame {
 		return episodes;
 	}
 	
-	private class DrakeandJoshMarathon extends Thread implements ActionListener {
+	private class DrakeandJosh extends Thread implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			start();
-		}
-
-		public void run() {
-			long duration;
-			int choice = JOptionPane.showConfirmDialog(null, "Run Sequential Marathon?");
-			if (choice == JOptionPane.YES_OPTION) {
-				ArrayList<Episode> episodes = sortEpisodes(DrakeandJosh);
-				for (int i = episodes.size() - 1; i >= 0; i--) {
-					try {
-						IsoFile isoFile = new IsoFile(episodes.get(i).getFile().getPath());
-						duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-						Desktop.getDesktop().open(episodes.get(i).getFile());// Opens the episode in VLC
-						// Waits for the current episode to end the loop then
-						// iterates and a new episode is picked
-						long elapsed = 0;
-						bar.setMaximum((int) duration);
-						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
-						while(elapsed < duration){
-								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-								bar.setValue((int) elapsed);
-								bar.setToolTipText(TimeUnit.SECONDS.toMinutes(elapsed) +" Minutes Elasped out of "+ TimeUnit.SECONDS.toMinutes(duration));
-								elapsed++;
-								System.out.println("Looped"+ elapsed);
-						}
-						bar.setValue(0);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-			} else if (choice == JOptionPane.NO_OPTION) {
-				while (!Thread.currentThread().isInterrupted()) {
-					duration = playEpisode(DrakeandJosh);
-					// Waits for the current episode to end the loop then
-					// iterates and a new episode is picked
-				}
+			if(drakeandjosh.isEnabled()) {
+				DrakeandJoshBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				drakeandjosh.disable();
 			} else {
-				JOptionPane.showMessageDialog(null, "ERROR: Marathon Choice Invalid");
+				DrakeandJoshBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				drakeandjosh.enable();
 			}
 		}
 
 	}
 
-	private class DannyPhantomMarathon extends Thread implements ActionListener {
+	private class DannyPhantom implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			start();
-		}
-
-		public void run() {
-			long duration;
-			int choice = JOptionPane.showConfirmDialog(null, "Run Sequential Marathon?");
-			if (choice == JOptionPane.YES_OPTION) {
-				ArrayList<Episode> episodes = sortEpisodes(DannyPhantom);
-				for (int i = episodes.size() - 1; i >= 0; i--) {
-					try {
-						IsoFile isoFile = new IsoFile(episodes.get(i).getFile().getPath());
-						duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-						Desktop.getDesktop().open(episodes.get(i).getFile());// Opens the episode in VLC
-						// Waits for the current episode to end the loop then
-						// iterates and a new episode is picked
-						long elapsed = 0;
-						bar.setMaximum((int) duration);
-						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
-						while(elapsed < duration){
-								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-								bar.setValue((int) elapsed);
-								bar.setToolTipText(TimeUnit.SECONDS.toMinutes(elapsed) +" Minutes Elasped out of "+ TimeUnit.SECONDS.toMinutes(duration));
-								elapsed++;
-								System.out.println("Looped"+ elapsed);
-						}
-						bar.setValue(0);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-			} else if (choice == JOptionPane.NO_OPTION) {
-				while (!Thread.currentThread().isInterrupted()) {
-					duration = playEpisode(DannyPhantom);
-					// Waits for the current episode to end the loop then
-					// iterates and a new episode is picked
-				}
+			if(dannyphantom.isEnabled()) {
+				DannyPhantomBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				dannyphantom.disable();
 			} else {
-				JOptionPane.showMessageDialog(null, "ERROR: Marathon Choice Invalid");
+				DannyPhantomBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				dannyphantom.enable();
 			}
 		}
 
 	}
 	
-	private class LegendofKorraMarathon extends Thread implements ActionListener {
+	private class LegendofKorra extends Thread implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			start();
-		}
-
-		public void run() {
-			long duration;
-			int choice = JOptionPane.showConfirmDialog(null, "Run Sequential Marathon?");
-			if (choice == JOptionPane.YES_OPTION) {
-				ArrayList<Episode> episodes = sortEpisodes(LegendofKorra);
-				for (int i = episodes.size() - 1; i >= 0; i--) {
-					try {
-						IsoFile isoFile = new IsoFile(episodes.get(i).getFile().getPath());
-						duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-						Desktop.getDesktop().open(episodes.get(i).getFile());// Opens the episode in VLC
-						// Waits for the current episode to end the loop then
-						// iterates and a new episode is picked
-						long elapsed = 0;
-						bar.setMaximum((int) duration);
-						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
-						while(elapsed < duration){
-								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-								bar.setValue((int) elapsed);
-								bar.setToolTipText(TimeUnit.SECONDS.toMinutes(elapsed) +" Minutes Elasped out of "+ TimeUnit.SECONDS.toMinutes(duration));
-								elapsed++;
-								System.out.println("Looped"+ elapsed);
-						}
-						bar.setValue(0);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-			} else if (choice == JOptionPane.NO_OPTION) {
-				while (!Thread.currentThread().isInterrupted()) {
-					duration = playEpisode(LegendofKorra);
-					// Waits for the current episode to end the loop then
-					// iterates and a new episode is picked
-				}
+			if(legendofkorra.isEnabled()) {
+				KorraBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				legendofkorra.disable();
 			} else {
-				JOptionPane.showMessageDialog(null, "ERROR: Marathon Choice Invalid");
+				KorraBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				legendofkorra.enable();
 			}
 		}
 
@@ -521,6 +637,14 @@ public class Driver extends JFrame {
 			}
 			} catch(Exception e){
 				e.printStackTrace();
+				FileWriter fw;
+				try {
+					fw = new FileWriter(Error);
+					fw.write(error);
+					fw.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 			
@@ -535,7 +659,8 @@ public class Driver extends JFrame {
 		Desktop.getDesktop().open(AprilFoolsSpecial);
 		long elapsed = 0;
 		bar.setMaximum((int) duration);
-		FileDisplay.setText("Now Playing: "+ AprilFoolsSpecial.toString());
+		FileDisplay.setText(AprilFoolsSpecial.toString());
+		FileDisplay.setToolTipText("Now Playing: "+ AprilFoolsSpecial.toString());
 		while(elapsed < duration){
 				Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 				bar.setValue((int) elapsed);
@@ -546,8 +671,24 @@ public class Driver extends JFrame {
 		bar.setValue(0);
 		} catch(IOException e){
 			e.printStackTrace();
+			FileWriter fw;
+			try {
+				fw = new FileWriter(Error);
+				fw.write(error);
+				fw.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			FileWriter fw;
+			try {
+				fw = new FileWriter(Error);
+				fw.write(error);
+				fw.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return duration;
 	}
@@ -566,138 +707,371 @@ public class Driver extends JFrame {
 	
 	public void NormalOperation(){
 		long duration;
-		int series = -1;
+		int roll = -1;
+		String current = "";
+		String upNext;
+		String nextShow;
+		LocalDateTime now;
 		DateTimeFormatter day = DateTimeFormatter.ofPattern("EEE");
 		DateTimeFormatter hour = DateTimeFormatter.ofPattern("HH");
-		LocalDateTime now;
+		now = LocalDateTime.now();
+		
+		ArrayList<Series> shows = new ArrayList<Series>();
+		
 		while (!Thread.currentThread().isInterrupted()) {
-			now = LocalDateTime.now();
-			System.out.println(day.format(now));
-			System.out.println(hour.format(now));
-			if(day.format(now).equals("Sun") && (Integer.parseInt(hour.format(now)) >= 16 || Integer.parseInt(hour.format(now)) < 6)){
-			series = r.nextInt(SIZE); // Picks a series and calls the playEpisode method by passing an array of episodes
-			} else if(!day.format(now).equals("Sun") && (Integer.parseInt(hour.format(now)) >= 20 || Integer.parseInt(hour.format(now)) < 6)){
-			series = r.nextInt(SIZE-1);
-			} else if(!day.format(now).equals("Sun") && !(Integer.parseInt(hour.format(now)) >= 20 || Integer.parseInt(hour.format(now)) < 6)){
-			series = r.nextInt(SIZE-3)+1;
-			} else if(day.format(now).equals("Sun") && !(Integer.parseInt(hour.format(now)) >= 20 || Integer.parseInt(hour.format(now)) < 6)){
-			series = r.nextInt(SIZE-2)+1;	
+			nextShow = "Up Next: ";
+			if (areyouafraidofthedark.isEnabled() && (Integer.parseInt(hour.format(now)) >= 16 || Integer.parseInt(hour.format(now)) < 6)) {
+				shows.add(areyouafraidofthedark);
 			}
-			try {
-				if (series == 0) {
-					duration = playEpisode(AreYouAfraidoftheDark);
-
-				} else if (series == 1) {
-					series = r.nextInt(2);
-					if(series == 0){
-					duration = playEpisode(LastAirbender);
-					} else {
-						duration = playEpisode(LegendofKorra);
-					}
-					
-				} else if (series == 2) {
-					duration = playEpisode(DannyPhantom);
-
-				} else if (series == 3) {
-					duration = playEpisode(DrakeandJosh);
-
-				} else if (series == 4) {
-					duration = playEpisode(HeyArnold);
-
-				} else if (series == 5) {
-					duration = playEpisode(InvaderZim);
-
-				} else if (series == 6) {
-					duration = playEpisode(JimmyNeutron);
-
-				} else if (series == 7) {
-					duration = playEpisode(Robot);
-
-				} else if (series == 8) {
-					duration = playEpisode(Ned);
-
-				} else if (series == 9) {
-					duration = playEpisode(RenandStimpy);
-
-				} else if (series == 10) {
-					duration = playEpisode(Rocko);
-
-				} else if (series == 11) {
-					duration = playEpisode(Rugrats);
-
-				} else if (series == 12) {
-					for(int k = 0; k < 2; k++){
-					duration = playEpisode(Spongebob);
-					}
-				} else if (series == 13) {
-					duration = playEpisode(FairlyOddParents);
-					
-				} else if (series == 14){
-					duration = playEpisode(CatDog);
 			
-				} else if(series == 15) {
-					duration = playEpisode(TMNT);
-				
-				} else if(series == 16) {
-					duration = playEpisode(LegendsofTheHiddenTemple);
-					
-				} else {
-					duration = 0;
+			if(lastairbender.isEnabled() && legendofkorra.isEnabled()) {
+				shows.add(avatar);
+			} else {
+				if(lastairbender.isEnabled()){
+					shows.add(lastairbender);
 				}
-
-			} catch (RuntimeException e) {
-				e.printStackTrace();
-
-			} catch (Exception e) {
-				e.printStackTrace();
+				if(legendofkorra.isEnabled()){
+					shows.add(legendofkorra);
+				}
 			}
+			if(dannyphantom.isEnabled()) {
+				shows.add(dannyphantom);
 			}
+			if(drakeandjosh.isEnabled()) {
+				shows.add(drakeandjosh);
+			}
+			if(heyarnold.isEnabled()) {
+				shows.add(heyarnold);
+			}
+			if(invaderzim.isEnabled()) {
+				shows.add(invaderzim);
+			}
+			if(jimmyneutron.isEnabled()) {
+				shows.add(jimmyneutron);
+			}
+			if(robot.isEnabled()) {
+				shows.add(robot);
+			}
+			if(ned.isEnabled()) {
+				shows.add(ned);
+			}
+			if(renandstimpy.isEnabled()) {
+				shows.add(renandstimpy);
+			} 
+			if(rocko.isEnabled()) {
+				shows.add(rocko);
+			}
+			if(rugrats.isEnabled()) {
+				shows.add(rugrats);
+			}
+			if(spongebob.isEnabled()) {
+				shows.add(spongebob);
+			}
+			if(fairlyoddparent.isEnabled()) {
+				shows.add(fairlyoddparent);
+			}
+			if(catdog.isEnabled()){
+				shows.add(catdog);
+			}
+			if(tmnt.isEnabled()) {
+				shows.add(tmnt);
+			}
+			if(doug.isEnabled()) {
+				shows.add(doug);
+			} 
+			if(legendsofthehiddentemple.isEnabled() && day.format(now).equals("Sun")) {
+				shows.add(legendsofthehiddentemple);
+			}
+			if(!areyouafraidofthedark.isEnabled() && !lastairbender.isEnabled() && !legendofkorra.isEnabled() && !dannyphantom.isEnabled() && !drakeandjosh.isEnabled() && !heyarnold.isEnabled() && !invaderzim.isEnabled() && !jimmyneutron.isEnabled() && !robot.isEnabled() && !ned.isEnabled() && !renandstimpy.isEnabled() && !rocko.isEnabled() && !rugrats.isEnabled() && !spongebob.isEnabled() && !fairlyoddparent.isEnabled() && !catdog.isEnabled() && !tmnt.isEnabled() && !doug.isEnabled() && !legendsofthehiddentemple.isEnabled()) { 
+				shows.add(secret);
+			}
+			
+			if(roll == -1) {
+				current = shows.get(r.nextInt(shows.size())).getName();
+			}
+			roll = r.nextInt(shows.size());
+			upNext = shows.get(roll).getName();
+			nextShow = nextShow.concat(shows.get(roll).getName());
+			UpNextDisplay.setText(nextShow);
+			System.out.println(shows.get(roll).getName());
+			
+			//NEXT SHOW
+			if (current.equals("Are You Afraid of the Dark")) {
+				duration = playEpisode(AreYouAfraidoftheDark);
+				
+			} else if (current.equals("Avatar")) {
+				duration = playEpisode(Avatar);
+				
+			} else if(current.equals("Last Airbender")){
+				duration = playEpisode(LastAirbender);
+				
+			} else if(current.equals("Legend of Korra")){
+				duration = playEpisode(LegendofKorra);
+				
+			} else if (current.equals("Danny Phantom")) {
+				duration = playEpisode(DannyPhantom);
+
+			} else if (current.equals("Drake and Josh")) {
+				duration = playEpisode(DrakeandJosh);
+
+			} else if (current.equals("Hey Arnold")) {
+				duration = playEpisode(HeyArnold);
+
+			} else if (current.equals("Invader Zim")) {
+				duration = playEpisode(InvaderZim);
+
+			} else if (current.equals("Jimmy Neutron")) {
+				duration = playEpisode(JimmyNeutron);
+
+			} else if (current.equals("Robot")) {
+				duration = playEpisode(Robot);
+
+			} else if (current.equals("Ned")) {
+				duration = playEpisode(Ned);
+
+			} else if (current.equals("Ren and Stimpy")) {
+				duration = playEpisode(RenandStimpy);
+
+			} else if (current.equals("Rocko")) {
+				duration = playEpisode(Rocko);
+
+			} else if (current.equals("Rugrats")) {
+				duration = playEpisode(Rugrats);
+
+			} else if (current.equals("Spongebob")) {
+				for(int k = 0; k < 2; k++){
+				duration = playEpisode(Spongebob);
+				}
+			} else if (current.equals("The Fairly Oddparents")) {
+				duration = playEpisode(FairlyOddParents);
+				
+			} else if (current.equals("Catdog")){
+				duration = playEpisode(CatDog);
+		
+			} else if(current.equals("TMNT")) {
+				duration = playEpisode(TMNT);
+			
+			} else if(current.equals("Doug")) {
+				duration = playEpisode(Doug);
+				
+			} else if(current.equals("Legends of the Hidden Temple")) {
+				duration = playEpisode(LegendsofTheHiddenTemple);
+				
+			} else if(current.equals("YTP")) { 
+				duration = playEpisode(Secret);
+				
+			} else {
+				duration = 0;
+			}
+			
+			current = upNext;
+			shows.clear();
+	}
 	}
 	
-	private class RobotMarathon extends Thread implements ActionListener {
+	private class Robot extends Thread implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			start();
+			if(robot.isEnabled()) {
+				RobotBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				robot.disable();
+			} else {
+				RobotBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				robot.enable();
+			}
 		}
 
-		public void run() {
-			long duration;
-			int choice = JOptionPane.showConfirmDialog(null, "Run Sequential Marathon?");
-			if (choice == JOptionPane.YES_OPTION) {
-				ArrayList<Episode> episodes = sortEpisodes(Robot);
-				for (int i = episodes.size() - 1; i >= 0; i--) {
-					try {
-						IsoFile isoFile = new IsoFile(episodes.get(i).getFile().getPath());
-						duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-						Desktop.getDesktop().open(episodes.get(i).getFile());// Opens the episode in VLC
-						// Waits for the current episode to end the loop then
-						// iterates and a new episode is picked
-						long elapsed = 0;
-						bar.setMaximum((int) duration);
-						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
-						while(elapsed < duration){
-								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-								bar.setValue((int) elapsed);
-								bar.setToolTipText(TimeUnit.SECONDS.toMinutes(elapsed) +" Minutes Elasped out of "+ TimeUnit.SECONDS.toMinutes(duration));
-								elapsed++;
-								System.out.println("Looped"+ elapsed);
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-			} else if (choice == JOptionPane.NO_OPTION) {
-				while (!Thread.currentThread().isInterrupted()) {
-					duration = playEpisode(Robot);
-					// Waits for the current episode to end the loop then
-					// iterates and a new episode is picked
-				}
+	}
+	
+	private class Airbender extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(lastairbender.isEnabled()) {
+				AirbenderBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				lastairbender.disable();
 			} else {
-				JOptionPane.showMessageDialog(null, "ERROR: Marathon Choice Invalid");
+				AirbenderBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				lastairbender.enable();
+			}
+		}
+
+	}
+	
+	private class Dark extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(areyouafraidofthedark.isEnabled()) {
+				DarkBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				areyouafraidofthedark.disable();
+			} else {
+				DarkBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				areyouafraidofthedark.enable();
+			}
+		}
+
+	}
+	
+	private class Arnold extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(heyarnold.isEnabled()) {
+				ArnoldBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				heyarnold.disable();
+			} else {
+				ArnoldBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				heyarnold.enable();
+			}
+		}
+
+	}
+	
+	private class Zim extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(invaderzim.isEnabled()) {
+				ZimBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				invaderzim.disable();
+			} else {
+				ZimBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				invaderzim.enable();
+			}
+		}
+
+	}
+	
+	private class Ned extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(ned.isEnabled()) {
+				NedBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				ned.disable();
+			} else {
+				NedBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				ned.enable();
+			}
+		}
+
+	}
+	
+	private class RenandStimpy extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(renandstimpy.isEnabled()) {
+				RSBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				renandstimpy.disable();
+			} else {
+				RSBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				renandstimpy.enable();
+			}
+		}
+
+	}
+	
+	private class Rocko extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(rocko.isEnabled()) {
+				RockoBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				rocko.disable();
+			} else {
+				RockoBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				rocko.enable();
+			}
+		}
+
+	}
+	
+	private class Rugrat extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(rugrats.isEnabled()) {
+				RugratBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				rugrats.disable();
+			} else {
+				RugratBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				rugrats.enable();
+			}
+		}
+
+	}
+	
+	private class OddParents extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(fairlyoddparent.isEnabled()) {
+				OddParentsBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				fairlyoddparent.disable();
+			} else {
+				OddParentsBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				fairlyoddparent.enable();
+			}
+		}
+
+	}
+	
+	private class Doug extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(doug.isEnabled()) {
+				DougBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				doug.disable();
+			} else {
+				DougBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				doug.enable();
+			}
+		}
+
+	}
+	
+	private class CatDog extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(catdog.isEnabled()) {
+				CatDogBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				catdog.disable();
+			} else {
+				CatDogBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				catdog.enable();
+			}
+		}
+
+	}
+	
+	private class TMNT extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(tmnt.isEnabled()) {
+				TMNTBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				tmnt.disable();
+			} else {
+				TMNTBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				tmnt.enable();
+			}
+		}
+
+	}
+	
+	private class Temple extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(legendsofthehiddentemple.isEnabled()) {
+				TempleBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				legendsofthehiddentemple.disable();
+			} else {
+				TempleBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				legendsofthehiddentemple.enable();
+			}
+		}
+
+	}
+	
+	private class JimmyNeutron extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(jimmyneutron.isEnabled()) {
+				NeutronBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				jimmyneutron.disable();
+			} else {
+				NeutronBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				jimmyneutron.enable();
+			}
+		}
+
+	}
+	
+	private class Spongebob extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(spongebob.isEnabled()) {
+				SpongeBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+				spongebob.disable();
+			} else {
+				SpongeBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+				spongebob.disable();
 			}
 		}
 
@@ -721,7 +1095,8 @@ public class Driver extends JFrame {
 				Desktop.getDesktop().open(firstTrailer);
 				long elapsed = 0;
 				bar.setMaximum((int) duration);
-				FileDisplay.setText("Now Playing: "+ firstTrailer.toString());
+				FileDisplay.setText(firstTrailer.toString());
+				FileDisplay.setToolTipText("Now Playing: "+ firstTrailer.toString());
 				while(elapsed < duration){
 						Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 						bar.setValue((int) elapsed);
@@ -739,7 +1114,8 @@ public class Driver extends JFrame {
 					// iterates and a new episode is picked
 					elapsed = 0;
 					bar.setMaximum((int) duration);
-					FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
+					FileDisplay.setText(episodes.get(i).toString());
+					FileDisplay.setToolTipText("Now Playing: "+ episodes.get(i).toString());
 					while(elapsed < duration){
 							Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 							bar.setValue((int) elapsed);
@@ -755,7 +1131,8 @@ public class Driver extends JFrame {
 						Desktop.getDesktop().open(secondTrailer);
 						elapsed = 0;
 						bar.setMaximum((int) duration);
-						FileDisplay.setText("Now Playing: "+ secondTrailer.toString());
+						FileDisplay.setText(secondTrailer.toString());
+						FileDisplay.setToolTipText("Now Playing: "+ secondTrailer.toString());
 						while(elapsed < duration){
 								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
 								bar.setValue((int) elapsed);
@@ -768,58 +1145,104 @@ public class Driver extends JFrame {
 				}
 				
 			} catch(Exception e) {
-				e.printStackTrace();
+				error = e.getMessage();
+				FileWriter fw;
+				try {
+					fw = new FileWriter(Error);
+					fw.write(error);
+					fw.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 	}
 	
-	private class SpongebobMarathon extends Thread implements ActionListener {
+	private class OnButton extends Thread implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			start();
+			dannyphantom.enable();
+			areyouafraidofthedark.enable();
+			lastairbender.enable();
+			drakeandjosh.enable();
+			heyarnold.enable();
+			invaderzim.enable();
+			jimmyneutron.enable();
+			legendofkorra.enable();
+			legendsofthehiddentemple.enable();
+			ned.enable();
+			renandstimpy.enable();
+			rocko.enable();
+			rugrats.enable();
+			spongebob.enable();
+			robot.enable();
+			fairlyoddparent.enable();
+			catdog.enable();
+			tmnt.enable();
+			doug.enable();
+			DannyPhantomBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			KorraBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			SpongeBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			RobotBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			DrakeandJoshBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			AirbenderBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			ArnoldBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			CatDogBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			DarkBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			DougBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			NedBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			OddParentsBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			RSBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			RockoBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			RugratBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			TMNTBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			ZimBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			TempleBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			NeutronBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
 		}
 
-		public void run() {
-			long duration;
-			int choice = JOptionPane.showConfirmDialog(null, "Run Sequential Marathon?");
-			if (choice == JOptionPane.YES_OPTION) {
-				ArrayList<Episode> episodes = sortEpisodes(Spongebob);
-				for (int i = episodes.size() - 1; i >= 0; i--) {
-					try {
-						IsoFile isoFile = new IsoFile(episodes.get(i).getFile().getPath());
-						duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration() / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-						Desktop.getDesktop().open(episodes.get(i).getFile());// Opens the episode in VLC
-						// Waits for the current episode to end the loop then
-						// iterates and a new episode is picked
-						long elapsed = 0;
-						bar.setMaximum((int) duration);
-						FileDisplay.setText("Now Playing: "+ episodes.get(i).toString());
-						while(elapsed < duration){
-								Thread.sleep(TimeUnit.SECONDS.toMillis(1));
-								bar.setValue((int) elapsed);
-								bar.setToolTipText(TimeUnit.SECONDS.toMinutes(elapsed) +" Minutes Elasped out of "+ TimeUnit.SECONDS.toMinutes(duration));
-								elapsed++;
-								System.out.println("Looped"+ elapsed);
-						}
-						bar.setValue(0);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, e.getMessage());
-					}
-
-				}
-			} else if (choice == JOptionPane.NO_OPTION) {
-				while (!Thread.currentThread().isInterrupted()) {
-					duration = playEpisode(Spongebob);
-					// Waits for the current episode to end the loop then
-					// iterates and a new episode is picked
-				}
-			} else {
-				JOptionPane.showMessageDialog(null, "ERROR: Marathon Choice Invalid");
-			}
+	}
+	
+	private class OffButton extends Thread implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			dannyphantom.disable();
+			areyouafraidofthedark.disable();
+			lastairbender.disable();
+			drakeandjosh.disable();
+			heyarnold.disable();
+			invaderzim.disable();
+			jimmyneutron.disable();
+			legendofkorra.disable();
+			legendsofthehiddentemple.disable();
+			ned.disable();
+			renandstimpy.disable();
+			rocko.disable();
+			rugrats.disable();
+			spongebob.disable();
+			robot.disable();
+			fairlyoddparent.disable();
+			catdog.disable();
+			tmnt.disable();
+			doug.disable();
+			DannyPhantomBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			KorraBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			SpongeBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			RobotBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			DrakeandJoshBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			AirbenderBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			ArnoldBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			CatDogBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			DarkBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			DougBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			NedBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			OddParentsBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			RSBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			RockoBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			RugratBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			TMNTBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			ZimBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			TempleBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			NeutronBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			
 		}
 
 	}
@@ -827,6 +1250,9 @@ public class Driver extends JFrame {
 	
 	public static void main(String[] args) {
 		root = JOptionPane.showInputDialog("What drive is the Network Drive mapped to? (I.E. A:)");
+		if(root == null || root.length() <= 0) {
+			System.exit(0);
+		}
 		new Driver();
 	}
 
