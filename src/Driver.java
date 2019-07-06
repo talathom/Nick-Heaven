@@ -1,3 +1,4 @@
+
 // Version 29 7/5/2019
 import java.awt.Color;
 import java.awt.Desktop;
@@ -12,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,9 +21,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-
-//Referenced Library
 import com.coremedia.iso.IsoFile;
+
+import twitter4j.StatusUpdate;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
+
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Scanner;
@@ -68,6 +73,8 @@ public class Driver extends JFrame {
 	JButton stopBUT = new JButton("RESET");
 	JButton[] controlButtons;
 	JButton[] holidayButtons = new JButton[5];
+	JButton TweetControlBUT = new JButton("Tweet");
+	JButton TweetBUT = new JButton("OFF");
 
 	static JProgressBar bar = new JProgressBar();
 	static JLabel FileDisplay = new JLabel();
@@ -76,18 +83,62 @@ public class Driver extends JFrame {
 	Font stopFont = new Font("Calibri", Font.BOLD, 14);
 	Font statusFont = new Font("Calibri", Font.BOLD, 9);
 
+	String consumerKey;
+	String consumerSecret;
+	String accessToken;
+	String accessSecret;
+	static Twitter twitter;
+	boolean canTweet;
+
 	static ArrayList<Series> showsList = new ArrayList<Series>();
 
 	// CLASS CONSTRUCTOR
 	public Driver() {
 
-		//Initial Show Declarations
-		Series[] shows = { new Series("Avatar: The Last Airbender"), new Series("Legend of Korra"), new Series("Danny Phantom"),
-				new Series("Are You Afraid of the Dark"), new Series("Drake and Josh"), new Series("Hey Arnold"),
-				new Series("Invader Zim"), new Series("Jimmy Neutron"), new Series("Legends of the Hidden Temple"),
-				new Series("Neds Declassified School Survival Guide"), new Series("Ren and Stimpy"), new Series("Rockos Modern Life"),
-				new Series("Rugrats"), new Series("Spongebob"), new Series("My Life as a Teenage Robot"),
-				new Series("The Fairly Oddparents"), new Series("CatDog"), new Series("TMNT"), new Series("Doug") };
+		TweetBUT.setToolTipText("Send a Tweet!");
+		TweetBUT.setBounds(220, 450, 100, 50);
+		TweetBUT.setText("Tweet");
+		TweetBUT.setForeground(Color.BLUE);
+		TweetBUT.setBackground(Color.WHITE);
+		TweetBUT.addActionListener(new TweetButtonListener());
+
+		TweetControlBUT.setToolTipText("Activate/Deactivate Auto Tweeting");
+		TweetControlBUT.setBounds(325, 450, 50, 50);
+		TweetControlBUT.setText("OFF");
+		TweetControlBUT.setForeground(Color.BLUE);
+		TweetControlBUT.setBackground(Color.WHITE);
+		TweetControlBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+		TweetControlBUT.addActionListener(new TweetControlButton());
+
+		File TwitterSecrets = new File(root + "\\Launcher\\Twitter.txt");
+
+		try {
+			Scanner sc = new Scanner(TwitterSecrets);
+			consumerKey = sc.nextLine();
+			consumerSecret = sc.nextLine();
+			accessToken = sc.nextLine();
+			accessSecret = sc.nextLine();
+			sc.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(consumerKey);
+		cb.setOAuthConsumerSecret(consumerSecret);
+		cb.setOAuthAccessToken(accessToken);
+		cb.setOAuthAccessTokenSecret(accessSecret);
+		TwitterFactory tf = new TwitterFactory(cb.build());
+		twitter = tf.getInstance();
+
+		// Initial Show Declarations
+		Series[] shows = { new Series("Avatar: The Last Airbender"), new Series("Legend of Korra"),
+				new Series("Danny Phantom"), new Series("Are You Afraid of the Dark"), new Series("Drake and Josh"),
+				new Series("Hey Arnold"), new Series("Invader Zim"), new Series("Jimmy Neutron"),
+				new Series("Legends of the Hidden Temple"), new Series("Neds Declassified School Survival Guide"),
+				new Series("Ren and Stimpy"), new Series("Rockos Modern Life"), new Series("Rugrats"),
+				new Series("Spongebob"), new Series("My Life as a Teenage Robot"), new Series("The Fairly Oddparents"),
+				new Series("CatDog"), new Series("TMNT"), new Series("Doug") };
 
 		// Load all show info in
 		for (int i = 0; i < shows.length; i++) {
@@ -98,7 +149,7 @@ public class Driver extends JFrame {
 		File[] AvatarEpisodes = combineArrays(shows[0], shows[1]);
 		Series avatar = new Series("Avatar");
 		avatar.setEpisodes(AvatarEpisodes);
-		
+
 		for (int i = 0; i < shows.length; i++) {
 			showsList.add(shows[i]);
 		}
@@ -129,7 +180,7 @@ public class Driver extends JFrame {
 		OffBUT.addActionListener(new OffButton());
 		OffBUT.setBackground(Color.RED);
 		OffBUT.setFont(statusFont);
-		
+
 		controlButtons = new JButton[showsList.size()];
 
 		// Place all butons on the GUI
@@ -152,24 +203,24 @@ public class Driver extends JFrame {
 				break;
 			}
 		}
-		
-		//Add combined Avatar Series now that buttons are placed
-		for(int j = 0; j < showsList.size(); j++) {
-			if(avatar.compareTo(showsList.get(j)) < 0) {
+
+		// Add combined Avatar Series now that buttons are placed
+		for (int j = 0; j < showsList.size(); j++) {
+			if (avatar.compareTo(showsList.get(j)) < 0) {
 				showsList.add(j, avatar);
 				break;
 			}
 		}
-		
+
 		Series[] holidayShows = { new Series("April Fools"), new Series("Halloween"), new Series("Christmas") };
 		for (Series show : holidayShows) {
 			show.loadFromDatabase(root);
 		}
 
 		JButton BlackSunBUT = new JButton();
-		
-		for(int j = 0; j < holidayButtons.length; j++) {
-			holidayButtons[j] = new JButton("Button "+ j);
+
+		for (int j = 0; j < holidayButtons.length; j++) {
+			holidayButtons[j] = new JButton("Button " + j);
 		}
 
 		i = 0;
@@ -191,11 +242,9 @@ public class Driver extends JFrame {
 		holidayButtons[2].setIcon(holidayShows[2].getImage());
 		holidayButtons[2].setEnabled(false);
 
-		
-
 		// Special Button
 		stopBUT.setToolTipText("Reset the Control Panel");
-		stopBUT.setBounds((int) (X * .35), 450, 100, 50);
+		stopBUT.setBounds(15, 450, 100, 50);
 		stopBUT.addActionListener(new restartListener());
 		stopBUT.setFont(stopFont);
 		stopBUT.setForeground(NickOrange);
@@ -218,6 +267,8 @@ public class Driver extends JFrame {
 		panel.add(bar);
 		panel.add(FileDisplay);
 		panel.add(UpNextDisplay);
+		panel.add(TweetBUT);
+		panel.add(TweetControlBUT);
 		for (JButton button : controlButtons) {
 			panel.add(button);
 		}
@@ -229,6 +280,7 @@ public class Driver extends JFrame {
 
 	/**
 	 * Combines the File arrays of two series and returns one array
+	 * 
 	 * @param a First Series
 	 * @param b Second Series
 	 * @return An array of both Series Episode File Arrays Combined
@@ -310,6 +362,7 @@ public class Driver extends JFrame {
 
 	/**
 	 * Writes Errors to a File
+	 * 
 	 * @param error Error Message from exception
 	 */
 	public static void writeError(String error) {
@@ -324,18 +377,17 @@ public class Driver extends JFrame {
 	}
 
 	/**
-	 * Sorts the Episodes in order of Lowest Number Season First then Lowest Number
-	 * Episode of Each Season.
-	 *
-	 * @param series Array of Epsiodes belonging to a show
-	 * @return Returns a List of the Episodes sorted from S1E1 to SxEy where x is
-	 *         the final season and y is the final epsiode of season y
+	 * Sorts episodes using HeapSort
+	 * 
+	 * @param series Episodes to be sorted
+	 * @return Sorted array of Episodes
 	 */
 	public static ArrayList<Episode> sortEpisodes(File[] series) {
-		ArrayList<Episode> episodes = new ArrayList<Episode>();
-		String season, episodeNum, name;
+		ArrayList<Episode> episodes = new ArrayList();
+
 		for (int i = 0; i < series.length; i++) {
-			name = series[i].getName();
+			String name = series[i].getName();
+			String season;
 			if (name.charAt(0) != 'S') {
 				season = name.substring(name.indexOf("S") + 1, name.indexOf("E"));
 			} else {
@@ -343,7 +395,7 @@ public class Driver extends JFrame {
 				System.out.println(name);
 				season = name.substring(name.indexOf("S") + 1, name.indexOf("E"));
 			}
-
+			String episodeNum;
 			if (!name.contains("&")) {
 				episodeNum = name.substring(name.indexOf("E") + 1, name.indexOf("."));
 			} else {
@@ -351,21 +403,47 @@ public class Driver extends JFrame {
 			}
 			episodes.add(new Episode(season, episodeNum, series[i]));
 		}
-		Episode temp;
-		for (int i = 0; i < episodes.size(); i++) {
-			for (int j = 0; j < episodes.size(); j++) {
-				if (episodes.get(i).isGreater(episodes.get(j))) {
-					temp = episodes.get(j);
-					episodes.set(j, episodes.get(i));
-					episodes.set(i, temp);
-				}
-			}
+
+		for (int i = episodes.size() / 2 - 1; i >= 0; i--) {
+			heapify(episodes, episodes.size(), i);
 		}
+
+		for (int i = episodes.size() - 1; i > 0; i--) {
+			Episode temp = (Episode) episodes.get(0);
+			episodes.set(0, (Episode) episodes.get(i));
+			episodes.set(i, temp);
+
+			heapify(episodes, i, 0);
+		}
+
 		return episodes;
+	}
+
+	public static void heapify(ArrayList<Episode> list, int n, int i) {
+		int large = i;
+		int left = 2 * i + 1;
+		int right = 2 * i + 2;
+
+		if ((left < n) && (((Episode) list.get(left)).isGreater((Episode) list.get(large)))) {
+			large = left;
+		}
+
+		if ((right < n) && (((Episode) list.get(right)).isGreater((Episode) list.get(large)))) {
+			large = right;
+		}
+
+		if (large != i) {
+			Episode temp = (Episode) list.get(i);
+			list.set(i, (Episode) list.get(large));
+			list.set(large, temp);
+
+			heapify(list, n, large);
+		}
 	}
 
 	/**
 	 * Activates and Deactives Shows from playing when a button is pressed
+	 * 
 	 * @author Thomas
 	 *
 	 */
@@ -373,11 +451,13 @@ public class Driver extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			JButton button = (JButton) e.getSource();
-			int index = searchShows(button.getText(), 0, showsList.size());
-			if (button.isEnabled()) {
+			String showName = button.getToolTipText().substring(7, button.getToolTipText().length());
+			int index = searchShows(showName, 0, showsList.size());
+			
+			if (showsList.get(index).isEnabled()) {
 				button.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
 				showsList.get(index).disable();
-			} else if(!button.isEnabled()){
+			} else if (!showsList.get(index).isEnabled()) {
 				button.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
 				showsList.get(index).enable();
 			}
@@ -514,15 +594,15 @@ public class Driver extends JFrame {
 			}
 			int airbender = searchShows("Avatar: The Last Airbender", 0, showsList.size());
 			int korra = searchShows("Legend of Korra", 0, showsList.size());
-			
+
 			System.out.println("");
-			for(Series series : showsList) {
+			for (Series series : showsList) {
 				System.out.println(series.getName());
 			}
-			System.out.println(korra + " "+ airbender + " "+ index);
+			System.out.println(korra + " " + airbender + " " + index);
 			if (showsList.get(korra).isEnabled() && showsList.get(airbender).isEnabled()) {
 				index = searchShows("Avatar", 0, showsList.size());
-				if(index == -1) {
+				if (index == -1) {
 					JOptionPane.showMessageDialog(null, "AVATAR NOT FOUND");
 				}
 				shows.add(showsList.get(index));
@@ -563,6 +643,24 @@ public class Driver extends JFrame {
 			nextShow = nextShow.concat(shows.get(roll).getName());
 			UpNextDisplay.setText(nextShow);
 			System.out.println(shows.get(roll).getName());
+
+			if (canTweet) {
+				int minute = LocalDateTime.now().getMinute();
+				String minStr;
+				if (minute < 10) {
+					minStr = "0" + minute;
+				} else {
+					minStr = Integer.toString(minute);
+				}
+				StatusUpdate update = new StatusUpdate("Now Playing: " + current + "\nUp Next: " + upNext + "\n"
+						+ LocalDateTime.now().getMonthValue() + "/" + LocalDateTime.now().getDayOfMonth() + "/"
+						+ LocalDateTime.now().getYear() + " at " + LocalDateTime.now().getHour() + ":" + minStr);
+				try {
+					twitter.updateStatus(update);
+				} catch (TwitterException e) {
+					e.printStackTrace();
+				}
+			}
 
 			playEpisode(shows.get(roll));
 
@@ -654,8 +752,11 @@ public class Driver extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			for (JButton button : controlButtons) {
-				button.enable();
 				button.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			}
+
+			for (Series series : showsList) {
+				series.enable();
 			}
 		}
 
@@ -666,19 +767,21 @@ public class Driver extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			for (JButton button : controlButtons) {
-				button.disable();
 				button.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
 			}
 
+			for (Series series : showsList) {
+				series.disable();
+			}
 		}
-
 	}
 
 	/**
 	 * Binary Search for a show in the showsList
+	 * 
 	 * @param showName Name of the show being searched
-	 * @param l Start index
-	 * @param r End index
+	 * @param l        Start index
+	 * @param r        End index
 	 * @return index where the show is located, -1 if not found
 	 */
 	int searchShows(String showName, int l, int r) {
@@ -695,6 +798,41 @@ public class Driver extends JFrame {
 		return -1;
 	}
 
+	private class TweetButtonListener extends Thread implements ActionListener {
+		private TweetButtonListener() {
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			String tweet = JOptionPane.showInputDialog("Type your tweet!");
+			if (tweet.length() > 150) {
+				JOptionPane.showMessageDialog(null, "Tweet's Cannot be more than 150 Characters!");
+			} else if (!tweet.equals("")) {
+				StatusUpdate update = new StatusUpdate(tweet);
+				try {
+					Driver.twitter.updateStatus(update);
+				} catch (TwitterException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private class TweetControlButton extends Thread implements ActionListener {
+		private TweetControlButton() {
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (!canTweet) {
+				canTweet = true;
+				TweetControlBUT.setText("ON");
+				TweetControlBUT.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			} else {
+				canTweet = false;
+				TweetControlBUT.setText("OFF");
+				TweetControlBUT.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			}
+		}
+	}
 
 	public static void main(String[] args) {
 		File settings = new File("Settings.txt");

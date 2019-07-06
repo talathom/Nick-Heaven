@@ -112,13 +112,14 @@ public class Series implements Comparable {
 		Connection con;
 		try {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-			String url = "jdbc:ucanaccess://P:/Java Projects/Nick Heaven/data/showDB.accdb";
+			String url = "jdbc:ucanaccess://" + root + "\\showDB.accdb";
 			con = DriverManager.getConnection(url, "", "");
 			Statement stmt = con.createStatement();
 			String query = "select Logo, EpisodeDir from shows where Name = '" + this.name + "'";
 			ResultSet rs = stmt.executeQuery(query);
+			String path;
 			while (rs.next()) {
-				String path = root + rs.getString("Logo");
+				path = root + rs.getString("Logo");
 				File img = new File(path);
 				this.image = new ImageIcon(path);
 				path = root + rs.getString("EpisodeDir");
