@@ -855,7 +855,7 @@ public class Driver extends JFrame {
 			}
 			new Driver();
 		} else { // Have user type in path to root and save it
-			root = JOptionPane.showInputDialog("What drive is the Network Drive mapped to? (I.E. A:)");
+			root = JOptionPane.showInputDialog("Please enter the directory of your Nick Heaven Installation");
 			if (root == null || root.length() <= 0) {
 				System.exit(0);
 			} else {
