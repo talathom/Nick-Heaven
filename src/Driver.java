@@ -574,7 +574,7 @@ public class Driver extends JFrame {
 
 	public void NormalOperation() {
 		long duration;
-		int roll = -1;
+		int currentRoll = -1, nextRoll = -1;
 		String current = "";
 		String upNext;
 		String nextShow;
@@ -594,12 +594,7 @@ public class Driver extends JFrame {
 			}
 			int airbender = searchShows("Avatar: The Last Airbender", 0, showsList.size());
 			int korra = searchShows("Legend of Korra", 0, showsList.size());
-
-			System.out.println("");
-			for (Series series : showsList) {
-				System.out.println(series.getName());
-			}
-			System.out.println(korra + " " + airbender + " " + index);
+			
 			if (showsList.get(korra).isEnabled() && showsList.get(airbender).isEnabled()) {
 				index = searchShows("Avatar", 0, showsList.size());
 				if (index == -1) {
@@ -634,15 +629,15 @@ public class Driver extends JFrame {
 			if (shows.size() == 0) {
 				JOptionPane.showMessageDialog(null, "NO SHOWS CHOSEN!");
 			}
-
-			if (roll == -1) {
-				current = shows.get(r.nextInt(shows.size())).getName();
+			if(currentRoll == -1) {
+				currentRoll = r.nextInt(shows.size());
+				current = shows.get(currentRoll).getName(); //Set current show
 			}
-			roll = r.nextInt(shows.size());
-			upNext = shows.get(roll).getName();
-			nextShow = nextShow.concat(shows.get(roll).getName());
+			
+			nextRoll = r.nextInt(shows.size()); //Roll the upnext
+			upNext = shows.get(nextRoll).getName();
+			nextShow = nextShow.concat(upNext);
 			UpNextDisplay.setText(nextShow);
-			System.out.println(shows.get(roll).getName());
 
 			if (canTweet) {
 				int minute = LocalDateTime.now().getMinute();
@@ -662,8 +657,9 @@ public class Driver extends JFrame {
 				}
 			}
 
-			playEpisode(shows.get(roll));
+			playEpisode(showsList.get(currentRoll));
 
+			currentRoll = nextRoll;
 			current = upNext;
 			shows.clear();
 		}
