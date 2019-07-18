@@ -1,5 +1,5 @@
 
-// Version 29 7/5/2019
+// Version 30 7/16/2019
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -336,7 +336,7 @@ public class Driver extends JFrame {
 			duration = isoFile.getMovieBox().getMovieHeaderBox().getDuration()
 					/ isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
 			System.out.println(duration);
-			Desktop.getDesktop().open(episode); // Opens the episode
+			Desktop.getDesktop().browse(episode.toURI()); // Opens the episode
 			long elapsed = 0;
 			bar.setMaximum((int) duration);
 			FileDisplay.setText(episode.toString());
@@ -583,6 +583,9 @@ public class Driver extends JFrame {
 		DateTimeFormatter hour = DateTimeFormatter.ofPattern("HH");
 		now = LocalDateTime.now();
 
+		/**
+		 * The arraylist of currently active and selectable shows on Nick Heaven, not to be confused with showsList which is all shows currently on Nick Heaven
+		 */
 		ArrayList<Series> shows = new ArrayList<Series>();
 
 		while (!Thread.currentThread().isInterrupted()) {
@@ -656,8 +659,10 @@ public class Driver extends JFrame {
 					e.printStackTrace();
 				}
 			}
+			
+			System.out.println("Now Playing: " + current + "\nUp Next: " + upNext);
 
-			playEpisode(showsList.get(currentRoll));
+			playEpisode(shows.get(currentRoll));
 
 			currentRoll = nextRoll;
 			current = upNext;
