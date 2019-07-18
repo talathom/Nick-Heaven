@@ -1,5 +1,5 @@
+// Version 31 7/18/2019
 
-// Version 30 7/16/2019
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -8,11 +8,14 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.Scanner;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,79 +24,57 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 import com.coremedia.iso.IsoFile;
-
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Scanner;
-import javax.swing.ImageIcon;
-
 public class Driver extends JFrame {
 
+	//ALL GLOBAL VARIABLES MUST BE UTILIZED BY BUTTONS OR SOME OTHER CODE WITH NO EASY ACCESS TO THEM
 	/**
-	 * Number of Series Active on Nick Heaven
-	 */
-	final int SIZE = 18;
-	/**
-	 * Width of the Launcher
-	 */
-	final int X = 400;
-	/**
-	 * Height of the Launcher
-	 */
-	final int Y = 575;
-
-	/**
-	 * Directory which the Network drive is mapped to
+	 * Nick Heaven directory
 	 */
 	static String root;
-	static String error;
+	
 	static File Error = new File("Error.txt");
-
-	Color NickOrange = new Color(244, 109, 37);
-
-	/* Files which point to the folder of a particular series */
-	File showsDir = new File(root + "\\Nick Heaven\\Shows"); // Directory where show directories are stored
-	File[] directories = showsDir.listFiles(); // Array of Show Folders
-
-	File iconDir = new File(root + "\\Logos");
-	File[] buttonIcons = iconDir.listFiles(); // Array of Files to be passed to ImageIcon Constructor
-
-	static Random r = new Random(); // Random Object
-	JPanel panel = new JPanel(); // Panel for the GUI
-	JButton launchBUT = new JButton("Launch Nick Heaven!"); // Button that Launches Nick Heaven
-	JButton OnBUT = new JButton("ON");
-	JButton OffBUT = new JButton("OFF");
-	JButton stopBUT = new JButton("RESET");
-	JButton[] controlButtons;
-	JButton[] holidayButtons = new JButton[5];
-	JButton TweetControlBUT = new JButton("Tweet");
-	JButton TweetBUT = new JButton("OFF");
-
 	static JProgressBar bar = new JProgressBar();
 	static JLabel FileDisplay = new JLabel();
 	static JLabel UpNextDisplay = new JLabel();
-	Font displayFont = new Font("Calibri", Font.BOLD, 12);
-	Font stopFont = new Font("Calibri", Font.BOLD, 14);
-	Font statusFont = new Font("Calibri", Font.BOLD, 9);
-
-	String consumerKey;
-	String consumerSecret;
-	String accessToken;
-	String accessSecret;
+	JButton[] controlButtons;
 	static Twitter twitter;
 	boolean canTweet;
 
+	/**
+	 * List of all shows available in Nick Heaven, not to be confused with shows currently enabled to be played
+	 */
 	static ArrayList<Series> showsList = new ArrayList<Series>();
 
-	// CLASS CONSTRUCTOR
 	public Driver() {
+		/**
+		 * Width of the Launcher
+		 */
+		final int X = 400;
+		/**
+		 * Height of the Launcher
+		 */
+		final int Y = 575;
+		JButton launchBUT = new JButton("Launch Nick Heaven!"); // Button that Launches Nick Heaven
+		JPanel panel = new JPanel(); // Panel for the GUI
+		JButton OnBUT = new JButton("ON");
+		JButton OffBUT = new JButton("OFF");
+		JButton stopBUT = new JButton("RESET");
+		JButton[] holidayButtons = new JButton[5];
+		JButton TweetControlBUT = new JButton("Tweet");
+		JButton TweetBUT = new JButton("OFF");
+		Color NickOrange = new Color(244, 109, 37);
+		/* Files which point to the folder of a particular series */
+		Font displayFont = new Font("Calibri", Font.BOLD, 12);
+		Font stopFont = new Font("Calibri", Font.BOLD, 14);
+		Font statusFont = new Font("Calibri", Font.BOLD, 9);
 
 		TweetBUT.setToolTipText("Send a Tweet!");
 		TweetBUT.setBounds(220, 450, 100, 50);
@@ -111,23 +92,32 @@ public class Driver extends JFrame {
 		TweetControlBUT.addActionListener(new TweetControlButton());
 
 		File TwitterSecrets = new File(root + "\\Launcher\\Twitter.txt");
+		
+		/**
+		 * 0: ConsumerKey
+		 * 1: ConsumerSecret
+		 * 2: AccessToken
+		 * 3: AccessTokenSecret
+		 */
+		String[] twitterString = { null, null, null, null };
 
+		int index = 0;
 		try {
 			Scanner sc = new Scanner(TwitterSecrets);
-			consumerKey = sc.nextLine();
-			consumerSecret = sc.nextLine();
-			accessToken = sc.nextLine();
-			accessSecret = sc.nextLine();
+			while(sc.hasNextLine()) {
+				twitterString[index] = sc.nextLine();
+				index++;
+			}
 			sc.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerKey(consumerKey);
-		cb.setOAuthConsumerSecret(consumerSecret);
-		cb.setOAuthAccessToken(accessToken);
-		cb.setOAuthAccessTokenSecret(accessSecret);
+		cb.setOAuthConsumerKey(twitterString[0]);
+		cb.setOAuthConsumerSecret(twitterString[1]);
+		cb.setOAuthAccessToken(twitterString[2]);
+		cb.setOAuthAccessTokenSecret(twitterString[3]);
 		TwitterFactory tf = new TwitterFactory(cb.build());
 		twitter = tf.getInstance();
 
@@ -308,17 +298,25 @@ public class Driver extends JFrame {
 	 * occur with the GUI while the rest of the program is waiting for the current
 	 * episode to end.
 	 */
-	private class launchBUTListener extends Thread implements ActionListener {
+	private class launchBUTListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent arg0) {
-			start(); // Starts the thread
-		}
-
-		// When the thread runs (buttons is pressed)
-		public void run() {
-			NormalOperation();
+			Thread t = new Thread(new threadController());
+			t.setName("Normal Operation");
+			t.start(); // Starts the thread
 		}
 	}
+
+		// When the thread runs (button is pressed)
+		private class threadController implements Runnable {
+			@Override
+			public void run() {
+				if(Thread.currentThread().getName().equals("Normal Operation")) {
+					NormalOperation();
+				}
+			}
+			
+		}
 
 	/**
 	 * Picks and new episode from the array of given episodes and plays it, then
@@ -349,6 +347,7 @@ public class Driver extends JFrame {
 				elapsed++;
 			}
 			bar.setValue(0);
+			isoFile.close();
 
 		} catch (IOException e) {
 			writeError(e.getMessage());
@@ -383,7 +382,7 @@ public class Driver extends JFrame {
 	 * @return Sorted array of Episodes
 	 */
 	public static ArrayList<Episode> sortEpisodes(File[] series) {
-		ArrayList<Episode> episodes = new ArrayList();
+		ArrayList<Episode> episodes = new ArrayList<Episode>();
 
 		for (int i = 0; i < series.length; i++) {
 			String name = series[i].getName();
@@ -447,7 +446,7 @@ public class Driver extends JFrame {
 	 * @author Thomas
 	 *
 	 */
-	private class showButtonListener extends Thread implements ActionListener {
+	private class showButtonListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
 			JButton button = (JButton) e.getSource();
@@ -534,7 +533,7 @@ public class Driver extends JFrame {
 		try {
 			File AprilFoolsSpecial = new File(
 					root + "\\Holiday Episodes\\April Fool's\\Spongebob S1E38 (April Fool's Special).mp4");
-			IsoFile isoFile = isoFile = new IsoFile(AprilFoolsSpecial.getPath());
+			IsoFile isoFile =  new IsoFile(AprilFoolsSpecial.getPath());
 			duration = (long) isoFile.getMovieBox().getMovieHeaderBox().getDuration()
 					/ isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
 			Desktop.getDesktop().open(AprilFoolsSpecial);
@@ -551,6 +550,7 @@ public class Driver extends JFrame {
 				System.out.println("Looped" + elapsed);
 			}
 			bar.setValue(0);
+			isoFile.close();
 		} catch (IOException e) {
 			writeError(e.getMessage());
 		} catch (InterruptedException e) {
@@ -564,7 +564,7 @@ public class Driver extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			Runtime rt = Runtime.getRuntime();
 			try {
-				Process pr = rt.exec("java -jar \"" + root + "\\Launcher\\Nick Heaven.jar\"");
+				Process pr = rt.exec("java -jar \"Nick Heaven.jar\"");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -573,7 +573,7 @@ public class Driver extends JFrame {
 	}
 
 	public void NormalOperation() {
-		long duration;
+		Random r = new Random();
 		int currentRoll = -1, nextRoll = -1;
 		String current = "";
 		String upNext;
@@ -591,8 +591,8 @@ public class Driver extends JFrame {
 		while (!Thread.currentThread().isInterrupted()) {
 			nextShow = "Up Next: ";
 			int index = searchShows("Are You Afraid of the Dark", 0, showsList.size());
-			if (showsList.get(index).isEnabled()
-					&& (Integer.parseInt(hour.format(now)) >= 16 || Integer.parseInt(hour.format(now)) < 6)) {
+			if (showsList.get(index).isEnabled() && (Integer.parseInt(hour.format(now)) >= 16 || Integer.parseInt(hour.format(now)) < 6)) {
+				System.out.println(hour.format(now));
 				shows.add(showsList.get(index));
 			}
 			int airbender = searchShows("Avatar: The Last Airbender", 0, showsList.size());
@@ -631,7 +631,9 @@ public class Driver extends JFrame {
 
 			if (shows.size() == 0) {
 				JOptionPane.showMessageDialog(null, "NO SHOWS CHOSEN!");
+				break;
 			}
+			
 			if(currentRoll == -1) {
 				currentRoll = r.nextInt(shows.size());
 				current = shows.get(currentRoll).getName(); //Set current show
@@ -659,8 +661,6 @@ public class Driver extends JFrame {
 					e.printStackTrace();
 				}
 			}
-			
-			System.out.println("Now Playing: " + current + "\nUp Next: " + upNext);
 
 			playEpisode(shows.get(currentRoll));
 
@@ -749,7 +749,7 @@ public class Driver extends JFrame {
 		}
 	}
 
-	private class OnButton extends Thread implements ActionListener {
+	private class OnButton implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
 			for (JButton button : controlButtons) {
@@ -763,7 +763,7 @@ public class Driver extends JFrame {
 
 	}
 
-	private class OffButton extends Thread implements ActionListener {
+	private class OffButton implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
 
@@ -823,6 +823,7 @@ public class Driver extends JFrame {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			JButton TweetControlBUT = (JButton) e.getSource(); //Cast the source to a Jbutton to perform changes on
 			if (!canTweet) {
 				canTweet = true;
 				TweetControlBUT.setText("ON");

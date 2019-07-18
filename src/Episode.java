@@ -1,7 +1,7 @@
-// Version 29 7/5/2019
+// Version 31 7/18/2019
 import java.io.File;
 
-public class Episode{
+public class Episode {
 	private String season, episodeNum;
 	private File file;
 	
