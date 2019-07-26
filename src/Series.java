@@ -138,7 +138,7 @@ public class Series implements Comparable {
 
 	public File getRandomEpisode() {
 		Random r = new Random();
-		int choice = r.nextInt(episodes.length) - 1;
+		int choice = r.nextInt(episodes.length);
 		return episodes[choice];
 	}
 

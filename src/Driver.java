@@ -47,6 +47,7 @@ public class Driver extends JFrame {
 	JButton[] controlButtons;
 	static Twitter twitter;
 	boolean canTweet;
+	Thread t; //Generic thread for use later that can edited by other threads
 
 	/**
 	 * List of all shows available in Nick Heaven, not to be confused with shows currently enabled to be played
@@ -301,9 +302,12 @@ public class Driver extends JFrame {
 	private class launchBUTListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent arg0) {
-			Thread t = new Thread(new threadController());
+			t = new Thread(new threadController());
+			Thread watcher = new Thread();
+			watcher.setName("Watcher");
 			t.setName("Normal Operation");
 			t.start(); // Starts the thread
+			watcher.start();
 		}
 	}
 
@@ -313,6 +317,29 @@ public class Driver extends JFrame {
 			public void run() {
 				if(Thread.currentThread().getName().equals("Normal Operation")) {
 					NormalOperation();
+					Thread.currentThread().interrupt();
+				}
+			}
+			
+		}
+		
+		private class watcherThread implements Runnable {
+			@Override
+			public void run() {
+				while(!Thread.currentThread().isInterrupted()) {
+					if(bar.getValue() != 0 && bar.getValue() == bar.getMaximum()) {
+						try {
+							Thread.currentThread().sleep(10000);
+							if(bar.getValue() != 0 && bar.getValue() == bar.getMaximum()) {
+								JOptionPane.showMessageDialog(null, "Killing Main Thread and Rebooting");
+								t.interrupt();
+								t = new Thread(new threadController());
+								t.start(); // Starts the thread
+							}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 			
